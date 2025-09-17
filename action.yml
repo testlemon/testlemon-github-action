@@ -1,0 +1,36 @@
+name: 'Execute TestLemon runner'
+description: 'TestLemon runner GitHub Action'
+inputs:
+  image:
+    description: 'TestLemon Docker image.'
+    required: true
+    default: 'itbusina/testlemon:latest'
+  args:
+    description: 'The TestLemon arguments.'
+    required: true
+  input_dir:
+    description: 'The path to a directory with collection(s).'
+    required: false
+    default: 'test'
+  output_dir:
+    description: 'The directory path to save the report(s).'
+    required: false
+    default: 'output'
+  network:
+    description: 'The container network.'
+    required: false
+    default: 'host'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Execute TestLemon
+      shell: bash
+      run: |
+        docker run \
+          -v ${{ inputs.input_dir }}:/app/${{ inputs.input_dir }} \
+          -v ${{ inputs.output_dir }}:/app/${{ inputs.output_dir }} \
+          --rm \
+          --network=${{ inputs.network }} \
+          ${{ inputs.image }} \
+          ${{ inputs.args }}
